@@ -506,7 +506,7 @@ class DeepSpeedStrategy(DDPStrategy, _Sharded):
 
         optimzer_state_requested = any(isinstance(item, (Optimizer, DeepSpeedOptimizer)) for item in state.values())
 
-        torch.cuda.empty_cache()
+        getattr(torch, f"{self.root_device.type.split(':')[0]}").empty_cache() if self.root_device.type != "cpu" else None
         _, client_state = engine.load_checkpoint(
             path,
             tag="checkpoint",

@@ -363,7 +363,7 @@ class Strategy(ABC):
         return self._lightning_module
 
     def load_checkpoint(self, checkpoint_path: _PATH) -> Dict[str, Any]:
-        torch.cuda.empty_cache()
+        getattr(torch, f"{self.root_device.type.split(':')[0]}").empty_cache() if self.root_device.type != "cpu" else None
         return self.checkpoint_io.load_checkpoint(checkpoint_path)
 
     def load_model_state_dict(self, checkpoint: Mapping[str, Any], strict: bool = True) -> None:
